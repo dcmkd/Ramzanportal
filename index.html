@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Govt., of KP, Ramazan Package Portal</title>
+    <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
+    <style>
+        :root { --kp-green: #1e7e34; --kp-dark: #145a25; --kp-gold: #ffcc00; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; text-align: center; color: #333; }
+        header { background: white; padding: 40px 20px; border-bottom: 8px solid var(--kp-gold); display: flex; flex-direction: column; align-items: center; }
+        .gov-logo { height: 180px; width: auto; margin-bottom: 20px; }
+        .main-title { font-size: 40px; font-weight: 800; color: var(--kp-green); margin: 0; text-transform: uppercase; }
+        .sub-title-area { margin-top: 10px; font-size: 26px; }
+        .package-title { font-weight: 600; color: #444; }
+        .district-title { font-weight: 800; color: var(--kp-green); margin-left: 10px; }
+        .container { max-width: 850px; margin: 40px auto; padding: 0 20px; }
+        .search-box { background: white; padding: 50px 40px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+        input { width: 100%; max-width: 550px; padding: 22px; font-size: 24px; font-weight: bold; text-align: center; border: 3px solid #ccc; border-radius: 12px; outline: none; }
+        .btn-main { display: block; width: 100%; max-width: 550px; margin: 30px auto 0; padding: 22px; color: white; border: none; border-radius: 12px; font-size: 24px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .btn-verify { background: var(--kp-green); }
+        .btn-clear { background: #666; }
+        #result-area { margin-top: 30px; }
+        .record-card { background: white; border-radius: 15px; border: 2px solid #e1e1e1; overflow: hidden; text-align: left; }
+        .card-header { background: var(--kp-green); color: white; padding: 20px; font-size: 26px; font-weight: bold; text-align: center; }
+        .data-row { display: flex; padding: 18px 25px; border-bottom: 1px solid #f0f0f0; font-size: 20px; }
+        .label { width: 45%; color: #666; font-weight: 600; }
+        .value { width: 55%; color: #000; font-weight: 800; }
+        .error-text { color: #d9534f; font-size: 26px; font-weight: bold; margin-top: 30px; line-height: 1.6; }
+        footer { margin-top: 100px; padding: 40px; color: #999; border-top: 1px solid #eee; font-size: 16px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <img src="KP_logo.png" alt="Government Logo" class="gov-logo">
+        <h1 class="main-title">Government of Khyber Pakhtunkhwa</h1>
+        <div class="sub-title-area">
+            <span class="package-title">Ramazan Package Payment to Beneficiaries</span>
+            <span class="district-title">DISTRICT MALAKAND</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="cnicInput" placeholder="Enter 13 digits CNIC No. without (—)" maxlength="13">
+            <button id="actionBtn" class="btn-main btn-verify" onclick="handleButtonClick()">VERIFY RECORD</button>
+        </div>
+        <div id="result-area"></div>
+    </div>
+
+    <footer>&copy; 2026 District Administration Malakand</footer>
+
+    <script>
+        let paymentData = [];
+        let retailerData = [];
+        let isShowingResult = false;
+
+        // Function to convert Excel serial date to DD/MM/YYYY
+        function formatExcelDate(serial) {
+            if (!serial || isNaN(serial)) return serial; 
+            if (String(serial).includes('/') || String(serial).includes('-')) return serial;
+            
+            const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        async function loadExcelData(fileName) {
+            try {
+                const response = await fetch(fileName + '?v=' + new Date().getTime()); // Prevent cache
+                const arrayBuffer = await response.arrayBuffer();
+                const workbook = XLSX.read(arrayBuffer);
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                return XLSX.utils.sheet_to_json(firstSheet);
+            } catch (e) { return []; }
+        }
+
+        window.onload = async function() {
+            paymentData = await loadExcelData("payment.xlsx");
+            retailerData = await loadExcelData("retailers.xlsx");
+            document.getElementById("cnicInput").addEventListener("keypress", (e) => {
+                if (e.key === "Enter") { e.preventDefault(); handleButtonClick(); }
+            });
+        };
+
+        function handleButtonClick() { isShowingResult ? clearRecord() : performSearch(); }
+
+        function clearRecord() {
+            document.getElementById('cnicInput').value = "";
+            document.getElementById('result-area').innerHTML = "";
+            const btn = document.getElementById('actionBtn');
+            btn.innerText = "VERIFY RECORD";
+            btn.className = "btn-main btn-verify";
+            isShowingResult = false;
+        }
+
+        function performSearch() {
+            const input = document.getElementById('cnicInput').value.trim();
+            const resultDiv = document.getElementById('result-area');
+            const btn = document.getElementById('actionBtn');
+            
+            if (!/^[0-9]{13}$/.test(input)) {
+                resultDiv.innerHTML = `<p class="error-text">INVALID INPUT<br><span style="font-size:20px; font-weight:normal;">Please input 13 digits CNIC No. without - or spaces</span></p>`;
+                return;
+            }
+
+            const beneficiary = paymentData.find(row => String(row['cnic'] || "").trim() === input);
+
+            if (beneficiary) {
+                const msisdn = String(beneficiary['retailer_msisdn'] || "").trim();
+                const retailer = retailerData.find(r => String(r['POSID'] || "").trim() === msisdn) || {};
+                const check = (d) => d && String(d).trim() !== "" ? d : 'N/A';
+                
+                // Combine Retailer Name and City
+                const retailerInfo = retailer['POS Name'] ? `${retailer['POS Name']} (${check(retailer['City'])})` : 'N/A';
+
+                resultDiv.innerHTML = `
+                    <div class="record-card">
+                        <div class="card-header">BENEFICIARY RECORD FOUND</div>
+                        <div class="data-row"><div class="label">CNIC Number:</div><div class="value">${check(beneficiary['cnic'])}</div></div>
+                        <div class="data-row"><div class="label">Cashin TRX ID:</div><div class="value">${check(beneficiary['cashin_trx_id'])}</div></div>
+                        <div class="data-row"><div class="label">Cashin Date:</div><div class="value">${formatExcelDate(beneficiary['cashin_date'])}</div></div>
+                        <div class="data-row"><div class="label">Cashin Amount:</div><div class="value">Rs. ${check(beneficiary['cashin_amount'])}</div></div>
+                        <div class="data-row"><div class="label">Cashout Trans ID:</div><div class="value">${check(beneficiary['cashout_trans_id'])}</div></div>
+                        <div class="data-row"><div class="label">Cashout Date:</div><div class="value">${formatExcelDate(beneficiary['cashout_date'])}</div></div>
+                        <div class="data-row" style="border:none;"><div class="label">Retailer Name and City:</div><div class="value">${retailerInfo}</div></div>
+                    </div>`;
+            } else {
+                resultDiv.innerHTML = `<p class="error-text">YOU ARE NOT A BENEFICIARY<br>KP Ramazan Package 2026 - District Malakand</p>`;
+            }
+
+            btn.innerText = "CLEAR RECORD";
+            btn.className = "btn-main btn-clear";
+            isShowingResult = true;
+        }
+    </script>
+</body>
+</html>
