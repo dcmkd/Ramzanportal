@@ -16,6 +16,7 @@
             overflow-x: hidden;
         }
 
+        /* Responsive Header with Curved Text and Two Logos */
         header { 
             background: white; 
             padding: 20px 10px 30px 10px; 
@@ -31,6 +32,7 @@
             gap: 10px;
         }
 
+        /* Specific Logo Size as requested */
         .side-logo { width: 130px; height: auto; flex-shrink: 0; }
 
         .curved-container {
@@ -54,6 +56,7 @@
         .package-title { font-size: 18px; font-weight: 600; color: #444; display: block; }
         .district-title { font-size: 24px; font-weight: 800; color: var(--kp-green); margin-top: 5px; display: block; }
 
+        /* Search Section */
         .container { width: 92%; max-width: 850px; margin: 30px auto; }
         .search-box {
             background: white; padding: 30px 15px;
@@ -67,9 +70,9 @@
             box-sizing: border-box;
         }
 
-        /* Responsive placeholder to ensure full text is visible on mobile */
+        /* FIX FOR MOBILE PLACEHOLDER TEXT SIZE */
         #cnicInput::placeholder {
-            font-size: 13px;
+            font-size: 13px; /* Smaller to fit the whole sentence on mobile */
             font-weight: normal;
             color: #888;
         }
@@ -83,6 +86,7 @@
         .btn-verify { background: var(--kp-green); }
         .btn-clear { background: #666; }
 
+        /* Result Section */
         #result-area { margin-top: 25px; }
         .record-card { background: white; border-radius: 15px; border: 2px solid #e1e1e1; overflow: hidden; text-align: left; }
         .card-header { background: var(--kp-green); color: white; padding: 18px; font-size: 20px; font-weight: bold; text-align: center; }
@@ -95,13 +99,14 @@
 
         footer { margin-top: 80px; padding: 30px; color: #999; border-top: 1px solid #eee; font-size: 15px; }
 
+        /* Desktop Adjustments */
         @media (min-width: 768px) {
             .side-logo { width: 130px; }
             .curved-container { max-width: 500px; height: 120px; }
             .curved-text text { font-size: 28px; }
             .package-title { font-size: 22px; }
             .district-title { font-size: 30px; }
-            #cnicInput::placeholder { font-size: 18px; }
+            #cnicInput::placeholder { font-size: 18px; } /* Larger on PC */
             .data-row { flex-direction: row; }
             .label { width: 45%; font-size: 17px; }
             .value { width: 55%; font-size: 19px; }
@@ -170,15 +175,7 @@
         window.onload = async function() {
             paymentData = await loadExcelData("payment.xlsx");
             retailerData = await loadExcelData("retailers.xlsx");
-
-            const inputField = document.getElementById("cnicInput");
-
-            // RESTRICT TO NUMBERS ONLY: This removes letters/symbols as you type
-            inputField.addEventListener("input", function(e) {
-                this.value = this.value.replace(/[^0-9]/g, '');
-            });
-
-            inputField.addEventListener("keypress", (e) => {
+            document.getElementById("cnicInput").addEventListener("keypress", (e) => {
                 if (e.key === "Enter") { e.preventDefault(); handleButtonClick(); }
             });
         };
@@ -227,4 +224,10 @@
                 resultDiv.innerHTML = `<p class="error-text">YOU ARE NOT A BENEFICIARY<br>KP Ramzan Package 2026 - District Malakand</p>`;
             }
 
-            btn.innerText
+            btn.innerText = "CLEAR RECORD";
+            btn.className = "btn-main btn-clear";
+            isShowingResult = true;
+        }
+    </script>
+</body>
+</html>
