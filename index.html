@@ -115,6 +115,19 @@
         .btn-main { font-size: 24px; max-width: 500px; }
         .container { max-width: 850px; }
     }
+	   /* This targets the placeholder text specifically */
+#cnicInput::placeholder {
+    font-size: 14px; /* Smaller size for mobile instruction */
+    font-weight: normal;
+    letter-spacing: 0px; /* Removes gaps so the whole sentence fits */
+}
+
+/* For Desktop/PC, we can make it slightly larger again */
+@media (min-width: 768px) {
+    #cnicInput::placeholder {
+        font-size: 18px;
+    }
+}
 </style>
 </head>
 <body>
@@ -226,3 +239,4 @@
     </script>
 </body>
 </html>
+
