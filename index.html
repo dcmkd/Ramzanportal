@@ -3,136 +3,138 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Govt. of KP - Ramazan Package Portal</title>
+    <title>Govt., of KP, Ramazan Package Portal</title>
     <script src="https://cdn.sheetjs.com/xlsx-latest/package/dist/xlsx.full.min.js"></script>
-    <style>
-        :root { --kp-green: #1e7e34; --kp-dark: #145a25; --kp-gold: #ffcc00; }
-        
-        body { 
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background-color: #f8f9fa; 
-            margin: 0; padding: 0; 
-            text-align: center; color: #333;
-            overflow-x: hidden;
-        }
+   <style>
+    :root { --kp-green: #1e7e34; --kp-dark: #145a25; --kp-gold: #ffcc00; }
+    
+    body { 
+        font-family: 'Segoe UI', Arial, sans-serif; 
+        background-color: #f8f9fa; 
+        margin: 0; padding: 0; 
+        text-align: center; color: #333;
+        overflow-x: hidden; /* Prevents side-scrolling on mobile */
+    }
 
-        /* Responsive Header with Curved Text and Two Logos */
-        header { 
-            background: white; 
-            padding: 20px 10px 30px 10px; 
-            border-bottom: 8px solid var(--kp-gold);
-        }
+    /* Official Curved Header Section */
+    header { 
+        background: white; 
+        padding: 20px 10px 30px 10px; 
+        border-bottom: 6px solid var(--kp-gold);
+    }
 
-        .header-top-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            max-width: 1000px;
-            margin: 0 auto;
-            gap: 10px;
-        }
+    .header-top-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-around; /* Better spacing for mobile */
+        max-width: 1000px;
+        margin: 0 auto;
+        gap: 10px;
+    }
 
-        /* Specific Logo Size as requested */
-        .side-logo { width: 130px; height: auto; flex-shrink: 0; }
+    .side-logo { height: 80px; width: auto; flex-shrink: 0; }
 
-        .curved-container {
-            flex-grow: 1;
-            max-width: 400px;
-            height: 100px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+    /* Curved Text Implementation - Now Responsive */
+    .curved-container {
+        flex-grow: 1;
+        max-width: 450px;
+        height: 100px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
-        .curved-text svg { width: 100%; height: auto; }
-        .curved-text text {
-            font-size: 24px;
-            font-weight: 800;
-            fill: var(--kp-green);
-            text-transform: uppercase;
-        }
+    .curved-text svg {
+        width: 100%;
+        height: auto;
+        max-height: 120px;
+    }
 
-        .sub-title-area { margin-top: 15px; }
-        .package-title { font-size: 18px; font-weight: 600; color: #444; display: block; }
-        .district-title { font-size: 24px; font-weight: 800; color: var(--kp-green); margin-top: 5px; display: block; }
+    .curved-text text {
+        font-size: 26px; /* Optimized for mobile */
+        font-weight: 800;
+        fill: var(--kp-green);
+        text-transform: uppercase;
+    }
 
-        /* Search Section */
-        .container { width: 92%; max-width: 850px; margin: 30px auto; }
-        .search-box {
-            background: white; padding: 30px 15px;
-            border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-        }
-        
-        input { 
-            width: 100%; padding: 18px; 
-            font-size: 24px; font-weight: bold; text-align: center; 
-            border: 3px solid #ccc; border-radius: 12px; outline: none;
-            box-sizing: border-box;
-        }
+    .sub-title-area { margin-top: 15px; padding: 0 10px; }
+    .package-title { font-size: 18px; font-weight: 600; color: #444; display: block; }
+    .district-title { font-size: 22px; font-weight: 800; color: var(--kp-green); margin-top: 5px; display: block; }
 
-        /* FIX FOR MOBILE PLACEHOLDER TEXT SIZE */
-        #cnicInput::placeholder {
-            font-size: 13px; /* Smaller to fit the whole sentence on mobile */
-            font-weight: normal;
-            color: #888;
-        }
+    /* Search Section */
+    .container { max-width: 100%; width: 90%; margin: 20px auto; padding: 0; }
+    .search-box {
+        background: white; padding: 30px 20px;
+        border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    }
+    
+    input { 
+        width: 100%; max-width: 100%; padding: 15px; 
+        font-size: 18px; font-weight: bold; text-align: center; 
+        border: 2px solid #ccc; border-radius: 10px; outline: none;
+        box-sizing: border-box; /* Ensures padding doesn't increase width */
+    }
+    
+    .btn-main {
+        display: block; width: 100%; 
+        margin: 20px auto 0; padding: 18px; 
+        color: white; border: none; border-radius: 10px; 
+        font-size: 20px; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    .btn-verify { background: var(--kp-green); }
+    .btn-clear { background: #666; }
 
-        .btn-main {
-            display: block; width: 100%; 
-            margin: 20px auto 0; padding: 18px; 
-            color: white; border: none; border-radius: 12px; 
-            font-size: 22px; font-weight: bold; cursor: pointer; transition: 0.3s;
-        }
-        .btn-verify { background: var(--kp-green); }
-        .btn-clear { background: #666; }
+    /* Result Presentation */
+    #result-area { margin-top: 20px; width: 100%; }
+    .record-card { background: white; border-radius: 15px; border: 2px solid #e1e1e1; overflow: hidden; text-align: left; }
+    .card-header { background: var(--kp-green); color: white; padding: 15px; font-size: 20px; font-weight: bold; text-align: center; }
+    
+    .data-row { 
+        display: flex; 
+        flex-direction: column; /* Stack label on top of value for mobile */
+        padding: 12px 20px; 
+        border-bottom: 1px solid #f0f0f0; 
+    }
+    .label { width: 100%; color: #666; font-size: 14px; font-weight: 600; margin-bottom: 2px; }
+    .value { width: 100%; color: #000; font-size: 18px; font-weight: 800; }
 
-        /* Result Section */
-        #result-area { margin-top: 25px; }
-        .record-card { background: white; border-radius: 15px; border: 2px solid #e1e1e1; overflow: hidden; text-align: left; }
-        .card-header { background: var(--kp-green); color: white; padding: 18px; font-size: 20px; font-weight: bold; text-align: center; }
-        
-        .data-row { display: flex; flex-direction: column; padding: 12px 20px; border-bottom: 1px solid #f0f0f0; }
-        .label { color: #666; font-size: 14px; font-weight: 600; }
-        .value { color: #000; font-size: 18px; font-weight: 800; }
+    .error-text { color: #d9534f; font-size: 20px; font-weight: bold; margin-top: 20px; padding: 0 10px; }
 
-        .error-text { color: #d9534f; font-size: 22px; font-weight: bold; margin-top: 25px; line-height: 1.6; }
+    footer { margin-top: 50px; padding: 20px; color: #999; border-top: 1px solid #eee; font-size: 14px; }
 
-        footer { margin-top: 80px; padding: 30px; color: #999; border-top: 1px solid #eee; font-size: 15px; }
+    /* Desktop Adjustments (Screens wider than 768px) */
+    @media (min-width: 768px) {
+        .side-logo { height: 110px; }
+        .curved-text text { font-size: 28px; }
+        .package-title { font-size: 24px; }
+        .district-title { font-size: 30px; }
+        .data-row { flex-direction: row; } /* Side-by-side on PC */
+        .label { width: 45%; font-size: 18px; margin-bottom: 0; }
+        .value { width: 55%; font-size: 20px; }
+        input { font-size: 24px; }
+        .btn-main { font-size: 24px; max-width: 500px; }
+        .container { max-width: 850px; }
+    }
+	   /* This targets the placeholder text specifically */
+#cnicInput::placeholder {
+    font-size: 14px; /* Smaller size for mobile instruction */
+    font-weight: normal;
+    letter-spacing: 0px; /* Removes gaps so the whole sentence fits */
+}
 
-        /* Desktop Adjustments */
-        @media (min-width: 768px) {
-            .side-logo { width: 130px; }
-            .curved-container { max-width: 500px; height: 120px; }
-            .curved-text text { font-size: 28px; }
-            .package-title { font-size: 22px; }
-            .district-title { font-size: 30px; }
-            #cnicInput::placeholder { font-size: 18px; } /* Larger on PC */
-            .data-row { flex-direction: row; }
-            .label { width: 45%; font-size: 17px; }
-            .value { width: 55%; font-size: 19px; }
-            .btn-main { max-width: 450px; }
-        }
-    </style>
+/* For Desktop/PC, we can make it slightly larger again */
+@media (min-width: 768px) {
+    #cnicInput::placeholder {
+        font-size: 18px;
+    }
+}
+</style>
 </head>
 <body>
 
     <header>
-        <div class="header-top-row">
-            <img src="logo.png" alt="KP Logo" class="side-logo">
-            <div class="curved-container">
-                <div class="curved-text">
-                    <svg viewBox="0 0 500 150">
-                        <path id="curve" d="M40,130 Q250,20 460,130" fill="transparent" />
-                        <text width="500">
-                            <textPath xlink:href="#curve" startOffset="50%" text-anchor="middle">
-                                Government of Khyber Pakhtunkhwa
-                            </textPath>
-                        </text>
-                    </svg>
-                </div>
-            </div>
-            <img src="dc.png" alt="DC Logo" class="side-logo">
-        </div>
+		<img src="KP_logo.png" alt="Government Logo" class="gov-logo" width="180">
+        <h1 class="main-title">Government of Khyber Pakhtunkhwa</h1>
         <div class="sub-title-area">
             <span class="package-title">Ramazan Package Payment to Beneficiaries</span>
             <span class="district-title">DISTRICT MALAKAND</span>
@@ -154,21 +156,25 @@
         let retailerData = [];
         let isShowingResult = false;
 
+        // Function to convert Excel serial date to DD/MM/YYYY
         function formatExcelDate(serial) {
             if (!serial || isNaN(serial)) return serial; 
             if (String(serial).includes('/') || String(serial).includes('-')) return serial;
+            
             const date = new Date(Math.round((serial - 25569) * 86400 * 1000));
             const day = String(date.getDate()).padStart(2, '0');
             const month = String(date.getMonth() + 1).padStart(2, '0');
-            return `${day}/${month}/${date.getFullYear()}`;
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
         }
 
         async function loadExcelData(fileName) {
             try {
-                const response = await fetch(fileName + '?v=' + new Date().getTime());
+                const response = await fetch(fileName + '?v=' + new Date().getTime()); // Prevent cache
                 const arrayBuffer = await response.arrayBuffer();
                 const workbook = XLSX.read(arrayBuffer);
-                return XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                return XLSX.utils.sheet_to_json(firstSheet);
             } catch (e) { return []; }
         }
 
@@ -197,7 +203,7 @@
             const btn = document.getElementById('actionBtn');
             
             if (!/^[0-9]{13}$/.test(input)) {
-                resultDiv.innerHTML = `<p class="error-text">INVALID INPUT<br><span style="font-size:18px; font-weight:normal;">Please input 13 digits CNIC No. without - or spaces</span></p>`;
+                resultDiv.innerHTML = `<p class="error-text">INVALID INPUT<br><span style="font-size:20px; font-weight:normal;">Please input 13 digits CNIC No. without - or spaces</span></p>`;
                 return;
             }
 
@@ -207,6 +213,8 @@
                 const msisdn = String(beneficiary['retailer_msisdn'] || "").trim();
                 const retailer = retailerData.find(r => String(r['POSID'] || "").trim() === msisdn) || {};
                 const check = (d) => d && String(d).trim() !== "" ? d : 'N/A';
+                
+                // Combine Retailer Name and City
                 const retailerInfo = retailer['POS Name'] ? `${retailer['POS Name']} (${check(retailer['City'])})` : 'N/A';
 
                 resultDiv.innerHTML = `
@@ -221,7 +229,7 @@
                         <div class="data-row" style="border:none;"><div class="label">Retailer Name and City:</div><div class="value">${retailerInfo}</div></div>
                     </div>`;
             } else {
-                resultDiv.innerHTML = `<p class="error-text">YOU ARE NOT A BENEFICIARY<br>KP Ramzan Package 2026 - District Malakand</p>`;
+                resultDiv.innerHTML = `<p class="error-text">YOU ARE NOT A BENEFICIARY<br>KP Ramazan Package 2026 - District Malakand</p>`;
             }
 
             btn.innerText = "CLEAR RECORD";
